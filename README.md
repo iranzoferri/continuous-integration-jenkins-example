@@ -123,8 +123,22 @@ and look "Console Output"
 
 
 
-![](img/.png)
+![jenkins-job-maven-item-name](img/jenkins-job-maven-item-name.png)
+
+![jenkins-job-maven-copy-from](img/jenkins-job-maven-copy-from.png)
+
+and click "Ok".
+
+Leave everything the same, except the description (type whatever you want) and build step like this:
+
+![jenkins-job-maven-clean-test](img/jenkins-job-maven-clean-test.png)
+
+Again, click on build Job:
+
+![jenkins-job-build-now-button](img/jenkins-job-build-now-button.png)
+
+
 
 ![](img/.png)
-
+![](img/.png)
 ![](img/.png)
