@@ -120,25 +120,168 @@ and look "Console Output"
 
 ### UNIT TEST
 
+Now we go to make a unit test worker on Jenkins, to do this we create a copy of previously worker job named "worker-build".
 
 
+![jenkins-job-maven-item-name](img/jenkins-job-maven-item-name-test.png)
 
-![jenkins-job-maven-item-name](img/jenkins-job-maven-item-name.png)
-
-![jenkins-job-maven-copy-from](img/jenkins-job-maven-copy-from.png)
+![jenkins-job-maven-copy-from](img/jenkins-job-maven-copy-from-build.png)
 
 and click "Ok".
 
 Leave everything the same, except the description (type whatever you want) and build step like this:
 
-![jenkins-job-maven-clean-test](img/jenkins-job-maven-clean-test.png)
+![jenkins-job-maven-clean-test](img/jenkins-job-maven-goal-clean-test.png)
 
 Again, click on build Job:
 
 ![jenkins-job-build-now-button](img/jenkins-job-build-now-button.png)
 
+### PACKAGING
+
+Now we go to make a package worker on Jenkins, to do this we create a copy of previously worker job named "worker-test".
+
+![jenkins-job-maven-item-name-package](img/jenkins-job-maven-item-name-package.png)
+
+![jenkins-job-maven-copy-from-test](img/jenkins-job-maven-copy-from-test.png)
+
+On next step, do the same as in the previous step, put a description and leave everything the same, except "Build > Goals" (see image) and click on the "Save" button.
+
+![jenkins-job-maven-clean-test](img/jenkins-job-maven-goal-package.png)
+
+Go to example-voting-app-job folder:
+
+![jenkins-job-folder-list-1](img/jenkins-job-folder-list-1.png)
+
+Click on the bar and look the console:
+
+![jenkins-job-folder-build-success](img/jenkins-job-folder-build-success.png)
+
+Go back and this is the result:
+
+![jenkins-job-folder-list-2](img/jenkins-job-folder-list-2.png)
+
+Now, go to "worker-package" job located at "example-voting-app-job" folder and click on "Workspace", inside the tree, go to worker/target/" and look here, te "jar" file is stored.
+
+![jenkins-job-package-jar](img/jenkins-job-package-jar.png)
 
 
-![](img/.png)
-![](img/.png)
+### Archive the artifacts
+
+Will make a few changes to the "worker-package" job:
+
+![jenkins-job-package-build-delete](img/jenkins-job-package-build-delete.png)
+
+Add option "skipTest" with "-D" argument, see help:
+
+![jenkins-job-package-skip-test](img/jenkins-job-package-skip-test.png)
+
+And put a match expression to archive the "tar" files (see help):
+
+![jenkins-job-package-archive-artifacts](img/jenkins-job-package-archive-artifacts.png)
+
+Save and click on "Build Now" again.
+
+This is the result:
+
+Console log:
+
+![jenkins-job-package-console-archive](img/jenkins-job-package-console-archive.png)
+
+and job (new section appears):
+
+![jenkins-job-package-new-section-artifacts](img/jenkins-job-package-new-section-artifacts.png)
+
+You can download "tar" from here.
+
+### BUILD TRIGGERS
+
+Trigger builds remotely (e.g., from scripts)
+
+Go to user management section and click on gear button of the your user (The user 
+what do you wants to trigger the action):
+
+![jenkins-user-configure-admin](img/jenkins-user-configure-admin.png)
+
+With this we can add a token to securely trigger the actions:
+
+![jenkins-user-new-token-test](img/jenkins-user-new-token-test.png)
+
+The tokens only appears once for security reasons (see help), and don't do that:
+
+~~11cab52627677978bf9758e1342bb2d530~~
+~~11a94d8c0a33ae3e782de6384d5bc1494f~~
+
+*Tip: use a token for each thing and if there is suspicion, renew it immediately, depending of its criticality.*
+
+![jenkins-job-trigger-builds-remotely](img/jenkins-job-trigger-builds-remotely.png)
+
+This is the URL resultant, with this you can trigger the action from a scripts remotely:
+
+```bash
+curl http://admin:11a94d8c0a33ae3e782de6384d5bc1494f@192.168.123.123:9006/job/example-voting-app-job/job/worker-package/build?token=11cab52627677978bf9758e1342bb2d530&cause=Test+This%20is%20to%20test%20the%20remote%20trigger
+```
+
+Put it on your browser or exec a curl command and appreciate the origin of the trigger on the console output:
+
+![jenkins-job-console-remote-trigger](img/jenkins-job-console-remote-trigger.png)
+
+
+On "Display options" you can select amount of "Displayed Builds", I put "5" on "No Of Displayed Builds".
+
+### PIPELINES
+
+The next part is configure a pipeline, for this is recomended to install "Build Pipeline" plugin:
+
+![jenkins-plugins-pipeline](img/jenkins-plugins-pipeline.png)
+
+Later, we will see how to update jenkins to avoid this security isues. 
+
+And now, click on "+" simbol into the job folder,
+
+![jenkins-job-folder-plus](img/jenkins-job-folder-plus.png)
+
+this is for configure a new view, type the name,
+
+![jenkins-job-build-pipeline-view](img/jenkins-job-build-pipeline-view.png)
+
+and set "Pipeline Flow",
+
+![jenkins-plugin-pipeline-flow-layout](img/jenkins-plugin-pipeline-flow-layout.png)
+
+finally will generate this view:
+
+![jenkins-job-build-pipeline-build-view](img/jenkins-job-build-pipeline-build-view.png)
+
+
+but... need to set upstream and downstream to make the proper correlation, like this:
+
+
+    build >>> test >>> package
+
+So, go to "worker-build" job config and set new build trigger:
+
+![jenkins-job-worker-build-post](img/jenkins-job-worker-build-post.png)
+
+now go to "worker-package" job config and set "Build Triggers", check "Build after other projects are built" and type here "worker-test"
+
+![jenkins-job-build-trigger-after](img/jenkins-job-build-trigger-after.png)
+
+and you can see the up/downstream, this is the relationship of the processes in your pipeline,
+
+![jenkins-job-up-down](img/jenkins-job-up-down.png)
+
+but there is still more, with the pluggin this is more visual:
+
+![jenkins-job-view](img/jenkins-job-view.png)
+
+See in action:
+
+![jenkins-job-pipeline-animation](img/jenkins-job-pipeline-animation.gif)
+
+Sorry, the update doesn't work very well and I accidentally launched it twice xD
+
+
+
+
 ![](img/.png)
