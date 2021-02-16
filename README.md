@@ -1,4 +1,4 @@
-# CI WITH JENKINS ♾️
+# CI JENKINS EXAMPLE ♾️
 
 Prerequisites:
 - docker
@@ -210,6 +210,7 @@ With this we can add a token to securely trigger the actions:
 The tokens only appears once for security reasons (see help), and don't do that:
 
 ~~11cab52627677978bf9758e1342bb2d530~~
+
 ~~11a94d8c0a33ae3e782de6384d5bc1494f~~
 
 *Tip: use a token for each thing and if there is suspicion, renew it immediately, depending of its criticality.*
@@ -235,7 +236,7 @@ The next part is configure a pipeline, for this is recomended to install "Build 
 
 ![jenkins-plugins-pipeline](img/jenkins-plugins-pipeline.png)
 
-Later, we will see how to update jenkins to avoid this security isues. 
+Remember there is not recommended that you install this plugin in a production environment. Later, we will see how to update jenkins to avoid this security isues. 
 
 And now, click on "+" simbol into the job folder,
 
@@ -282,6 +283,54 @@ See in action:
 Sorry, the update doesn't work very well and I accidentally launched it twice xD
 
 
+### HOOKS
+
+First, go to your github profile and generate a token like this:
+
+![github-personal-access-tokens](img/github-personal-access-tokens.png)
+
+![github-personal-access-token-set](img/github-personal-access-token-set.png)
 
 
-![](img/.png)
+jenkins-continuous-integration-example
+
+~~6fbbe81e96ceb46419c86196fc6211b91ab487f1~~ <-- Never upload it to a public repository
+
+*BE CAREFUL: This is a possible security issue, please keep this token in a safe place.*
+
+Now, go to jenkins/dashboard/configuration, on "GitHub" section, type the name
+
+![jenkins-dashboard-config-github-server](img/jenkins-dashboard-config-github-server.png)
+
+and click "Add" button:
+
+![jenkins-credentials-add-secret-text](img/jenkins-credentials-add-secret-text.png)
+
+![jenkins-dashboard-config-github-hooks](img/jenkins-dashboard-config-github-hooks.png)
+
+and finally, click on save button.
+
+Now we go to "worker-build" job and paste example-voting-app clone url from github,
+
+![jenkins-job-worker-build-github-project](img/jenkins-job-worker-build-github-project.png)
+
+and below continue with,
+
+![jenkins-job-worker-build-hook-trigger](img/jenkins-job-worker-build-hook-trigger.png)
+
+Now, go to github/repo-settings/Webhooks and add one:
+
+![github-add-webhook](img/github-add-webhook.png)
+
+Go to the repository, push something and go back to jenkins pipeline to see the magic:
+
+![jenkins-job-worker-action-triggered](img/jenkins-job-worker-action-triggered.png)
+
+You have more info in the build link:
+
+![jenkins-job-worker-build-info](img/jenkins-job-worker-build-info.png)
+
+### NOW, YOU HAVE CI AUTOMATION
+### BEAUTIFUL AND SUCCESS!!
+
+
